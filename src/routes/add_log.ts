@@ -20,7 +20,6 @@ export default (db: Db) => async ({ body }: Request, response: Response) => {
 
     response.status(200).send(addedDoc);
   } catch (error) {
-    console.log(error);
     response.status(500).send('Internal server error');
   }
 };
