@@ -1,9 +1,11 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import cors from 'cors';
 import * as bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
 
-import logs from './routes/logs';
+import connect from './db/connect';
+import get_logs from './routes/get_logs';
+import add_log from './routes/add_log';
 
 dotenv.config();
 
@@ -11,11 +13,15 @@ const app = express();
 const PORT = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cors());
 
 const main = async () => {
-  const client = await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+  const db = await connect();
 
-  app.get('/logs', logs);
+  app.get('/logs', get_logs(db));
+
+  app.post('/logs', add_log(db));
 
   app.listen(PORT, (err) => {
     if (err) {
