@@ -1,11 +1,12 @@
-import express from 'express';
-import cors from 'cors';
-import * as bodyParser from 'body-parser';
-import * as dotenv from 'dotenv';
+import express from "express";
+import cors from "cors";
+import * as bodyParser from "body-parser";
+import * as dotenv from "dotenv";
 
-import connect from './db/connect';
-import get_logs from './routes/get_logs';
-import add_log from './routes/add_log';
+import connect from "./db/connect";
+import get_logs from "./routes/get_logs";
+import add_log from "./routes/add_log";
+import error from "./routes/404";
 
 dotenv.config();
 
@@ -19,9 +20,11 @@ app.use(cors());
 const main = async () => {
   const db = await connect();
 
-  app.get('/logs', get_logs(db));
+  app.get("/logs", get_logs(db));
 
-  app.post('/logs', add_log(db));
+  app.post("/logs", add_log(db));
+
+  app.use(error);
 
   app.listen(PORT, (err) => {
     if (err) {
